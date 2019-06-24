@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>The Assembly</title>
+    <!-- <link rel='stylesheet' href='styles/rnn.css'></link> -->
+    <link rel='stylesheet' href='styles/projects.css'></link>
+    <link href="https://fonts.googleapis.com/css?family=Work+Sans:300,400" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300" rel="stylesheet">
+</head>
+
+<body>
+
+  <div id='header'>
+    <img src='images/header_images/h_assem.jpg' id='headerImage'>
+    <div id='title'>THE ASSEMBLY</div>
+  </div>
+
+  <div class='container'>
+    <p class="review"><b>"There is a time when the operation of the machine becomes so odious, makes you so sick at heart,
+      that you can&apos;t take part. You can&apos;t even passively take part! And you've got to put your bodies upon
+      the gears and upon the wheels, upon the levers, upon all the apparatus, and you've got to make it stop! And you've got to indicate to the people who run it, to the people who own it &#45; that unless you're free,
+      the machine will be prevented from working at all!"</b> &#45; Mario Savio, 1964
+    </p>
+
+      <p>
+      The Assembly was a collaborative project that combined robotics, digital speech and text processing,
+      and digital video processing and projection. My role in the project included the <b>conceptualisation</b>, <b>sound and text design</b>, <b>implementation of the visuals and their projection and mapping</b>, and <b>live performance control</b>.
+    </p>
+
+    <iframe width="560" height="500" src="https://www.youtube.com/embed/isvsUnt8wbc"
+    frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen
+    style="width: 100%">
+      </iframe>
+
+    <h1>Concept</h1>
+    <p>
+      Before making any technical or specific aesthetic choices we considered the subject matter inherent to the idea of the robot &#45; a machine designed to perform work. We decided to do a piece that looks at the robot in terms of that original meaning &#45; a worker &#45; and to ask how this fits into a discourse of exploitation. We wanted to push the worker to its limit, let the robot work and then see what can be the effects on it, or the world it is in, when those limits are exhausted.</p>
+      <h1>Speech and Sound Design</h1>
+    <p>
+      The piece is comprised of two sonic elements. The "speech" delivered by the robot, and the accompanying audio. I selected the audio &#45; a piece by <i>Emptyset</i> for both its timbral quality and its progression of intensity, as I believe it served the arch of the piece well.
+      <br><br>
+      We decided to have the robot recite a monologue, more of a internal reflection, since there&quot;s the impression that this will be happening in its head &#45; via disembodied voice. I began to think about collecting text extracts from songs or film, with relevant subject matter, but this didn&quot;t go too far. It turns out, I was already familiar with the material I would ultimately choose to use &#45; an excerpt from a speech by Mario Savio.
+      <br>
+      <br>
+      I then built a Markov model script using Allison Parish&quot;s Markov script. This analyzed the probability of letter and word sequences in the original text, and through changing a variable in the text, I could degrade the size of accuracy &#45; basically whether it looks for word length sequences, thereby effectively reproducing the text, or letter lenght sequenes &#45; which could produce mutations and total degradations of the source text. I ran this iteratively 10 times, each further and further degrading the text.
+      <a class='external_link' href='https://github.com/periode/robot-liberation-theater/tree/master/01_working_assembly' target="_blank">
+      <u>The source code can be viewed here</u>.</a>
+      <br>
+      <br>
+      So the inital text would look like this:
+    </p>
+    <img src="images/assembly/01.png" class="image">
+    <p>And on the final iteration of the degrade, it would look like this:</p>
+    <img src="images/assembly/02.png" class="image">
+    <p>
+      I used the MacOS built in TTS functionality in Pages, to recite the text, recorded this in Logic,
+      and then edited and effected the audio, with Reverb, Speech transform, and equalisation.
+      The voice degrades as the quality of the speech degrades. You can listen to the monologue below.
+    </p>
+    <iframe width="100%" height="166" scrolling="no" frameborder="no"
+      src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/369514760&amp;color=ff00f0&amp;auto_play=false&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false&amp;show_teaser=true">
+    </iframe>
+
+    <h1>Visuals and Projection</h1>
+    <p>
+    For the visual element, I used wall and floor projections. The wall projection is taken from Charlie Chaplin&quot;s film <i>Modern Times</i>. I performed glitch operations on the source video in real-time using a glitch patch in Max/MSP that I adapted from <a class='external_link' href='http://abstrakt.vade.info/?p=48'><u>here</u></a>. When the system finally breaks, this video also breaks, reverting to a flickering red screen on the wall and floor.
+  </p>
+
+  </div>
+
+
+  </body>
+  </html>

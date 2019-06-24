@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>DroneSynth</title>
+    <!-- <link rel='stylesheet' href='styles/rnn.css'></link> -->
+    <link rel='stylesheet' href='styles/projects.css'></link>
+    <link href="https://fonts.googleapis.com/css?family=Work+Sans:300,400" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300" rel="stylesheet">
+</head>
+
+<body>
+
+  <div id='header'>
+    <img src='images/header_images/h_drone.jpg' id='headerImage'>
+    <div id='title'>DRONESYNTH</div>
+  </div>
+
+  <div class='container'>
+    <p>
+      The DroneSynth is a digital synthesizer and MIDI control interface. The project started as coursework for the class Digital Electronics Lab, and developed further into a second iteration. The second prototype, was similar to the first in terms of the software, but featured a more durable control interface. I used this prototype during my participation at the <a href="http://www.nyuad-artscenter.org/en_US/news-and-blogs/news-and-blogs/2016/november/boacmi/" target="_blank" class="external_link">Bang on a Can Musicians&apos; Intensive<a> at the NYU Abu Dhabi Arts Center in February 2017.
+      <br><br>
+      The video below shows the first prototype and demonstrates the capabilities of the synth.
+      <br><br>
+    </p>
+    <iframe width="560" height="500" src="https://www.youtube.com/embed/XIfRqxBIiPE?rel=0"
+    frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen
+    style="width: 100%">
+      </iframe>
+    <p>
+      This video shows the second prototype being used in an improvised performance/composition.
+      <br><br>
+    </p>
+    <iframe width="560" height="500" src="https://www.youtube.com/embed/aNeXRsGuuC8"
+    frameborder="0" allow="autoplay; encrypted-media" allowfullscreen
+    style="width: 100%; position: relative;">
+      </iframe>
+
+    <p>
+      You can basically think of this project in 2 parts: the <b>software synthesizer</b> in Max and the <b>controller</b>, which consists of the Sensors and Arduino Sketch. Let me talk about the Synthesizer first. Within the patch there are 3 sound waves produced. At the foundation is a sine wave whose pitch is determined by the potentiometer value on the main pot. This base frequency is summed with any harmonics which are added in by turning the corresponding pots &#40;A1, A2, B1, B2, C1, C2&#41;. The 6 pots allow you to add up to six harmonics to the base frequency. The harmonics are multiplications of the order 2, 3, 4, 6, 8, 9, and 14x the base frequency.
+      <br>
+      <br>
+      This summed signal goes through 2 separate processings: through the <b>p littleProcessor</b> and <b>p angelHaze</b> subpatchers.
+      <br>
+      <br>
+      In <b>p littleProcessor</b>, the signal is processed so that you get the following outputs:
+      <ul>
+      <li>1. Summed signal multiplied by its square root.</li>
+      <li>2. and 3. The square root of the signal multiplied by an LFO.</li>
+        </ul>
+      This LFO rate is determined by the value output from the IR sensor. The closer your hand is to the sensor, the slower the LFO rate will be.
+      <br>
+      <br>
+      Output 2 is fed into Delay 1 and 2, summed and sent to the Degrader module. Here, the signal goes through a sample and bit degrade to produce a distortion of the signal. The amount of distortion is determined by the amount of bend of the Flex Sensor. More bend = more distortion.
+      <br>
+      <br>
+      The clean summed signal is output to channel 1. This second degraded signal is output to a second channel.
+      The third channel sees the summed harmonics out of <b>p harmonix</b> sent through <b>p angelHaze</b>. Inside it undergoes low frequency oscillation, at a different set of values than the clean signal, but also based on your hand’s position from the IR sensor. This is also distorted in the Degrader and then routed to delays 3 and 4, summed, and output to the third channel.
+      <br>
+      <br>
+      That sums up how the patch produces the audio.
+      <br>
+      <br>
+      The controller functions like this. The 6 pot knobs determine how much of each of the 6 harmonics is present.
+      With all the pots turned completely left, you get just the bass frequency. Bending the Flex sensor produces distortion. An initial press of the first button initialises the patch, while all subsequent presses perform a delay shift in all 4 delays.
+      <br>
+      <br>
+      The delay shift works like this: for each delay the current delay value &#40;0-127 for the slider&#41; is examined when the button is pressed. If the delay is &lt;50% of maximum &40;&lt;63&41;, a random delay above 63 is generated as the new delay. If the delay is &gt;63, then a random delay below 63 is generated. This allows for some creative uses of the relation between how much harmonics the performer implements and the speed of the day ramp. One very high input harmonic will give a long delay, but then adding more lower input harmonics will reduce the average. So there is some space to play with this in a performance setting.
+      <br>
+      <br>
+      The rest of the buttons engage different play modes. Mode 1 simply adds the amount of harmonic to the wave and outputs it constantly. Mode 2 is a 2-step sequence, where the harmonics are automated to cycle between a given level and 0, in an ON/OFF pattern. The rate of this is taken from the value of delay 2. Mode 3 is a ramp mode. Here the values of each harmonic fade in and out from 0 to their selected level. The ramp time comes from delay 1. This time is multiplied by 6 randomly generated coefficients so that each harmonic ramps over a different time but these are still somehow interrelated.
+      <br>
+      <br>
+      Here is the final Arduino Sketch, annotated.
+      </p>
+
+      <figure>
+        <figcaption><b>Arduino Code</b></figcaption>
+        <pre><code class="language-arduino" id="code">
+// include the library for the Sharp IR sensor
+#include &lt;SharpIR.h&gt;
+
+// ~~~ declaration of variables ~~~ //
+
+// buttons
+int buttonPin = 10;
+bool buttonStateSetduration = LOW;
+int buttonPin2 = 9;
+int buttonPin3 = 8;
+int buttonPin4 = 7;
+int buttonPin5 = 6;
+int buttonPin6 = 5;
+int buttonPin7 = 4;
+int range = 0;
+
+// potentiometer values
+int potValBaseFreq;
+int potValHarm1;
+int potValHarm2;
+int potValHarm3;
+int potValHarm4;
+int potValHarm5;
+int potValHarm6;
+
+// Flex resistor variables
+const int flexpin = A8;
+int finalFlexDifference;
+int lastFlex = 0;
+int smoothRatioFlex = 5;
+
+//smoothing of flexVal
+const int numReadings = 10;
+int readingsFlex[numReadings]; // the readings from the analog Flex input
+int readIndexFlex = 0; // the index of the current Flex reading
+int totalFlex = 0; // the running total of Flex values
+int averageFlex = 0; // the average for Flex
+
+// smoothing of IR values
+int readingsIR[numReadings]; // the readings from the infrared sensor
+int readIndexIR = 0; // the index of the current IR readings
+int totalIR = 0; // the running total of IR values
+int averageIR = 0; // the average for IR
+
+void setup() {
+
+Serial.begin (9600);
+
+// declare buttonPins as inputs
+pinMode(buttonPin, INPUT);
+pinMode(buttonPin2, INPUT);
+pinMode(buttonPin3, INPUT);
+pinMode(buttonPin4, INPUT);
+pinMode(buttonPin5, INPUT);
+pinMode(buttonPin6, INPUT);
+pinMode(buttonPin7, INPUT);
+
+// this setup code is part of the setup for averageing
+// initialize all the readings to 0:
+for (int thisReading = 0; thisReading &lt; numReadings; thisReading++) {
+readingsFlex[thisReading] = 0;
+}
+
+for (int thisReading = 0; thisReading &lt; numReadings; thisReading++) {
+readingsIR[thisReading] = 0;
+}
+
+}
+
+void loop() {
+
+/* buttonStateSetduration is a variable that corresponds
+to the first button. Functions differnetly than other buttons in that it just reports
+its state, doesn't set an output number like buttons 2 to 7 */
+
+buttonStateSetduration = digitalRead(buttonPin);
+// send MidiNoteOn with the arguments (note number, velocity, midi channel).
+// velocity is irrelvent since it's not used for anything
+usbMIDI.sendNoteOn(buttonStateSetduration, 127, 7);
+
+// if any of the buttons 2 through 7 are pressed send corresponding usbMIDI
+
+if (digitalRead(buttonPin2) == HIGH) {
+usbMIDI.sendNoteOn(1, 127, 1);
+}
+
+else if (digitalRead(buttonPin3) == HIGH) {
+usbMIDI.sendNoteOn(2, 127, 2);
+}
+
+else if (digitalRead(buttonPin4) == HIGH)
+{
+usbMIDI.sendNoteOn(3, 127, 3);
+}
+
+else if (digitalRead(buttonPin5) == HIGH) {
+usbMIDI.sendNoteOn(4, 127, 4);
+}
+
+else if (digitalRead(buttonPin6) == HIGH) {
+usbMIDI.sendNoteOn(5, 127, 5);
+}
+
+else if (digitalRead(buttonPin7) == HIGH) {
+usbMIDI.sendNoteOn(6, 127, 6);
+}
+
+// redundant code
+/*int controlRange = 1;
+usbMIDI.sendMIDInote(controlRange, range, 1);
+usbMIDI.sendNoteOn(range, 127, 1);*/
+
+/* ~~ IR sensor section + smoothing ~~ */
+
+SharpIR sharp(A9, 25, 93, 1080);
+/*in the form ir, x, y,
+ir: the pin where your sensor is attached.
+25: the number of readings the library will make before calculating an average distance.
+93: the difference between two consecutive measurements to be taken as valid (in %)
+model: is an int that determines your sensor: 1080 for GP2Y0A21Y, 20150 for GP2Y0A02Y
+
+NOTE: the first level of averaging occurs within this SharpIR function itself, where it
+takes 25 readings and gives a first avergae.
+*/
+
+// defines the range over which the IR will respond
+int dis = sharp.distance();
+int constDis = constrain(dis, 4, 44);
+
+// ~~ second round of avergaing for IR values ~~
+
+totalIR = totalIR - readingsIR[readIndexIR];
+// read from the sensor:
+readingsIR[readIndexIR] = constDis;
+// add the reading to the total:
+totalIR = totalIR + readingsIR[readIndexIR];
+// advance to the next position in the array:
+readIndexIR = readIndexIR + 1;
+
+// if we're at the end of the array...
+if (readIndexIR &gt;= numReadings) {
+// ...wrap around to the beginning:
+readIndexIR = 0;
+}
+
+// calculate the average:
+averageIR = totalIR / numReadings;
+
+// if the reading is between the acceptable range 4&lt;averageIR&lt;44
+if (averageIR &gt; 4 &amp;&amp; averageIR &lt; 44) {
+
+int controlIR = 2;
+usbMIDI.sendControlChange(controlIR, averageIR, 2);
+// send a MIDI control message (control, value (the average), channel
+}
+
+/* Flex Sensor and FlexVal smoothing */
+
+int flexposition;
+int flexVal;
+
+// subtract the last reading:
+totalFlex = totalFlex - readingsFlex[readIndexFlex];
+// read from the sensor:
+flexposition = analogRead(A8);
+//constrain flexposition between 650 and 1010:
+flexVal = constrain(flexposition, 650, 1010);
+
+readingsFlex[readIndexFlex] = flexposition;
+
+// add the reading to the total:
+totalFlex = totalFlex + readingsFlex[readIndexFlex];
+// advance to the next position in the array:
+readIndexFlex = readIndexFlex + 1;
+
+// if we're at the end of the array...
+if (readIndexFlex &gt;= numReadings) {
+// ...wrap around to the beginning:
+readIndexFlex = 0;
+}
+
+// calculate the average:
+averageFlex = totalFlex / numReadings;
+// map the average to a narrower range
+averageFlex = map(averageFlex, 600, 1000, 0, 20);
+// constrain the range to provide a fixed maximum and minimum value
+averageFlex = constrain(averageFlex, 0, 20);
+
+int controlFlex = 3;
+usbMIDI.sendControlChange(controlFlex, averageFlex, 3);
+// send a MIDI control message (control, value (the average), channel
+
+/* Output potentiometer values */
+
+// read potValBaseFreq from analog pin A1:
+potValBaseFreq = analogRead(A1);
+// map the Potentiometer value (0-1023) to a MIDI number (0-127):
+potValBaseFreq = map(potValBaseFreq, 0, 1023, 0, 127);
+// constrain the MIDI val to its domain (0-127):
+potValBaseFreq = constrain(potValBaseFreq, 0, 127);
+// output the value through MIDI control change (control, number, channel):
+// the control argument isn't really important, since the value is routed via channel number in Max
+usbMIDI.sendControlChange(5, potValBaseFreq, 5);
+
+potValHarm1 = analogRead(A2);
+potValHarm1 = map(potValHarm1, 0, 1023, 0, 127);
+potValHarm1 = constrain(potValHarm1, 0, 127);
+usbMIDI.sendControlChange(6, potValHarm1, 6);
+
+potValHarm2 = analogRead(A3);
+potValHarm2 = map(potValHarm2, 0, 1023, 0, 127);
+potValHarm2 = constrain(potValHarm2, 0, 127);
+usbMIDI.sendControlChange(7, potValHarm2, 7);
+
+potValHarm3 = analogRead(A4);
+potValHarm3 = map(potValHarm3, 0, 1023, 0, 127);
+potValHarm3 = constrain(potValHarm3, 0, 127);
+usbMIDI.sendControlChange(8, potValHarm3, 8);
+
+potValHarm4 = analogRead(A5);
+potValHarm4 = map(potValHarm4, 0, 1023, 0, 127);
+potValHarm4 = constrain(potValHarm4, 0, 127);
+usbMIDI.sendControlChange(9, potValHarm4, 9);
+
+potValHarm5 = analogRead(A6);
+potValHarm5 = map(potValHarm5, 0, 1023, 0, 127);
+potValHarm5 = constrain(potValHarm5, 0, 127);
+usbMIDI.sendControlChange(10, potValHarm5, 10);
+
+potValHarm6 = analogRead(A7);
+potValHarm6 = map(potValHarm6, 0, 1023, 0, 127);
+potValHarm6 = constrain(potValHarm6, 0, 127);
+usbMIDI.sendControlChange(11, potValHarm6, 11);
+
+// 50 ms delay
+delay(50);
+
+}
+</code>
+</pre>
+  </figure>
+
+  </div>
+
+</body>
+</html>

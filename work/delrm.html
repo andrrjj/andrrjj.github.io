@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>delRM_01</title>
+    <!-- <link rel='stylesheet' href='styles/rnn.css'></link> -->
+    <link rel='stylesheet' href='styles/projects.css'></link>
+    <link href="https://fonts.googleapis.com/css?family=Work+Sans:300,400" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300" rel="stylesheet">
+</head>
+
+<body>
+
+  <div id='header'>
+    <img src='images/header_images/h_dlrm.png' id='headerImage'>
+    <div id='title'>DELRM_01</div>
+  </div>
+
+  <div class='container'>
+
+
+
+    <p><em>delRM_01</em> is a piece written for keyed and bowed guitar, and initially for prepared electronics, although the version that I ultimately performed for our final presentation did not include the prepared electronics. The piece developed out of the idea of exploring progressively increasing delays, feedbacks and modulation on a selection of source musical material, as well as a focus on experimental instrumental technique, in this case, for the guitar. Some of the works that I had listened to and that had inspired the initial idea of the composition included Franck Bedrossian’s <em>Trac&eacute;s D’Ombres</em> &#40;2007&#41;, Rob Ashley’s <em>The Wolfman</em> &#40;1964&#41; and Swan’s <em>Screenshot</em> &#40;2014&#41;. My idea was to use repeating musical structures within live processing of progressively increasing intensity. What emerged out of my attempts to program an audio processing system for this piece was an expansive tool, which I will attempt to experiment with in a future series of compositions in a similar vein to <em>delRM_01</em>, perhaps expanding its functionality along the way. The following text will outline the essentials of how the patch for both versions &#40;the one performed in my presentation, and the intended original version&#41; of the piece functions.
+    <br>
+    <br>
+  </p>
+
+  <iframe width="100%" height="370" scrolling="no" frameborder="no"  src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/485818842&color=%23ff00f0&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe>
+
+  <p>
+    <h1>INPUT AND ROUTING</h1>
+    The patch has two audio input options, an <em>adc~</em> input for a live performed instrument in a performance/recording context and a playlist input for playing back sound files in testing and troubleshooting. These inputs are both routed to the central <em>matrix~</em> that serves as the main routing object for audio in the patch. It routes the input signal to the effects modules and the effects modules’ returns to the four outputs.
+    <br>
+    In the future, I hope to expand the patch to include playback for a four-channel system but in this iteration, the four outputs are scaled down to a stereo output. From the <em>matrix~</em>, the input audio is sent as a clean signal to a fifth output, and then to the delay module and then either directly out to an output, or to a ring-modulator and then an output. The matrix routing is automated in a patcher section in which, when banged, the four channels are randomly re-routed. This section uses an urn object so that the channels are sequentially routed and so that repeat or double channel routing is avoided. The probability of routing the delay directly to the output or through the ring-modulator first, is preset by a message to this patch section. Over the course of the piece this probability changes so that more of the ring-modulators are active in the later sections of the piece. The matrix routing section also contains the encapsulation <em>p matrixroutinganalysis</em>, which ensures that whenever the matrix re-routes the audio, one ring-modulator is active. The matrix is re-routed whenever the piece moves into a new section.
+    <br>
+    <br>
+    <h1>AUDIO PROCESSING</h1>
+    The audio processing in the piece consists of two stages, a delay stage and ring-modulation stage. The delay module creates four different delays on the input signal.
+    <br>
+    <br>
+    The delay time is randomly generated on bang within a parameter constraint i.e. low, mid, or high delay. These are produced by a random number between 0-127 to facilitate the slider object and then scaled to between 100 and 16000 milliseconds. The probability of low, mid, or high delay, as well as the feedback value, are predetermined by the section parameters of that section of the piece.  Each delay has its own preset feedback for each section and a unique delay value is generated in each of the four delays as well. The general progression in the piece is that of more low delays in the beginning, transitioning to fewer low delays and more high delays in the end.
+    <br>
+    <br>
+    In the current version, the pedal that I used changed the way the delay section functioned. The pedal served as a kind of ON/OFF switch for the delay unit. In the ON state, the delay unit functions as described above, but in the OFF state, the feedbacks are ramped down to a value of 0.1. This stops long, echo-like delay effects and is used when a quicker decay of sound is required.
+    <br>
+    <br>
+    In the ring-modulators, the modulation frequency is the only value being altered. The first RM contains a probability patcher that determines whether the ring-modulation will be 1&#41; short, and gated, 2&#41; long and bassy, or 3&#41; long and higher pitched.  This value is then sent to the other three RMs, to the sub-patcher <em>p ringmod-n-effector</em>. This patcher either multiplies small modulating frequencies or divides larger ones by a randomly selected integer, so that the modulation frequencies of the three remaining RMs are multiples of the modulating frequency of the main RM. I did this to make the RM effect more cohesive across the board.
+    <br>
+    <br>
+    <h1>AMPLITUDE TRACKING AND VALUE CHANGES</h1>
+    The amplitude tracker uses <em>analyzer~</em> with a trigger threshold to essentially detect when the performer plays &#40;by detecting when the signal is above a certain amplitude – the trigger amplitude&#41;.
+    <br>
+    <br>
+    When triggered, the amplitude tracker will not report further &quot;attacks&quot; until it detects that the signal level has fallen to the noise floor &#40;i.e. there is no more signal coming in, or the performer has stopped playing&#41;. After reaching the noise floor, a gate is reopened that allows an increase above the trigger amplitude to once again trigger certain changes in the rest of the patch. It generates new delay times in each of the delays, as well as a new modulating frequency in the master RM.
+    <br>
+    <br>
+    This trigger also sends a pan sweep through each of the four processed audio channels. The four channels alter between four preset pan values that can be adjusted as desired.
+    <br>
+    <br>
+    The delays are changed instantly, but the modulating frequencies are ramped over a period between 1000 and 14000 milliseconds. The patch has a safety mechanism that ensures that until the modulating frequency ramps are completed, no further &quot;attack&quot; detections will trigger changes in the patch &#40;a gate between the trigger for the parameter changes and the actual processing modules is shut until the ring modulation ramp is completed&#41;.
+    <br>
+    <br>
+    <h1>OTHER INFORMATION</h1>
+    Generally, all the parameters that are changing have sends and receives in and out that allow for remote communication across &quot;long distances&quot; and between sub-patch and b-patcher levels. In the original version, the pedal is used in two ways; as a trigger for prepared electronic files, and as a kind of score tracker, based on the number of presses counted by a system of <em>counter</em> objects.
+    <br>
+    <br>
+    In the original version, where playback of sound files was included, the patch would use these counters to play audio in one of three <em>sfplay~</em>’s. The sound files were stored and recalled via a <em>coll</em> and the index listing of the <em>coll</em> corresponded to the pedal press count detected in the patch. Essentially, certain sound files were cued to certain pedal presses.
+    <br>
+    <br>
+    However, in this iteration of the patch, the pedal does not trigger prepared electronics &#40;which were left out of the performance&#41;. Instead, the pedal acts as a switch for engaging and disengaging the delays. An initial press of the pedal is used to calibrate the patch on startup.
+    <br>
+    <br>
+    <h1>OSC CONTROL</h1>
+    A final feature of the patch is the use of TouchOSC with <em>udpsend</em> and <em>udpreceive</em> objects to control certain parts of the patch &#40;toggles, gains&#41;. In the version performed in class, the OSC had the additional feature of changing the piece sections, since the pedal was used for toggling the Delay function in this iteration. The OSC interface I used is a custom interface created in TouchOSC editor.
+    <br>
+    <br>
+    The last two features I would like to talk about are related to the original iteration of the patch. Since that version featured playback of audio files, those files needed to be loaded into the <em>col</em>l object when the patch is transferred to a new machine. To that end I developed a way to load these files easily using a <em>dropfile</em> mechanism.
+    <br>
+    <br>
+    The last feature is a reset mechanism, which allows the performer or a technician to reset the patch to the start of a particular section, in case something goes wrong during the performance, or simply to reset the patch. The section uses a <em>umenu</em> that, depending on its index output, resets the patch parameters to those corresponding to the selected section.
+    <br>
+    <br></p>
+
+
+
+  </div>
+
+</body>
+</html>

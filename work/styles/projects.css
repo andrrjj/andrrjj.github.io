@@ -1,0 +1,93 @@
+body {
+  margin: 0px;
+}
+
+#header{
+  position: relative;
+  width: 100vw;
+  min-width: 900px;
+  /* height: 207px; */
+  height: 12vw;
+  min-height: 134px;
+  max-height: 174px;
+}
+
+#headerImage{
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+#title{
+  position: absolute;
+  z-index: 2;
+  color: white;
+  top: 42%;
+  left: 15vw;
+  font-size: 18pt;
+  font-family: 'Work Sans';
+}
+
+.container{
+  font-family: 'Roboto';
+  position: relative;
+  width: 70vw;
+  min-width: 630px;
+  left: 15vw;
+  margin-top: 28pt;
+  text-align: justify;
+  font-size: 14pt;
+  padding-top: 20px;
+}
+
+h1{
+  font-family: 'Work Sans', sans-serif;
+  font-size: 1.5em;
+}
+
+h2{
+  font-family: 'Work Sans', sans-serif;
+  font-size: 1em;
+}
+
+a.external_link{
+  color: black;
+}
+
+a.external_link:hover{
+  background-color: yellow;
+  color: magenta;
+}
+
+.image{
+  position: relative;
+  width: 100%;
+}
+
+.image_delrm{
+  position: relative;
+  width: 42%;
+  text-align: center;
+}
+
+#code{
+  font: 'Monaco';
+}
+
+p.review{
+  font-size: 20pt;
+  font-style: oblique;
+}
+
+p.description{
+  text-align: center;
+  color: rgb(133, 140, 153);
+  font-style: oblique;
+  font-size: 12pt;
+}
+
+p.quotation{
+  font-size: 12pt;
+  text-align: left;
+}

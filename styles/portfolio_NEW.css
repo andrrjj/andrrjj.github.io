@@ -1,0 +1,361 @@
+body {
+  margin: 0px;
+}
+
+#page{
+  width:100%;
+  max-width: 100%;
+  height:100%;
+  overflow: hidden;
+}
+
+#banner_container{
+  width: 100%;
+  height: 200px;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+#banner_img{
+  height: 100%;
+  width: 100%;
+}
+
+#menubar{
+  border-top: 2px solid black;
+  border-bottom: 2px solid black;
+  /* height: 40px; */
+  /* background-color: pink; */
+  /* padding-top: 15px;
+  padding-bottom: 15px; */
+  font-family: 'Work Sans', sans-serif;
+  width: 100%;
+  min-width: 397px;
+  /* font-size: 1.2em; */
+  font-size: 1.8em;
+  /* max-font-size: 1.2em; */
+  text-align: center;
+}
+
+.menu_item{
+  padding-top: 13px;
+  padding-bottom: 13px;
+  padding-left: 5px;
+  padding-right: 5px;
+  display: inline-block;
+  text-align: center;
+  position: relative;
+  max-width:125px;
+  margin-left: 15%;
+  /* left: 0px; */
+}
+
+/* .menu_item:hover{
+  background-color: yellow;
+
+} */
+
+#first_menu_item{
+  text-align: left;
+  /* left: 27%; */
+  /* margin-left: 0px; */
+  margin-left: 0px;
+}
+
+#last_menu_item{
+  text-align: right;
+  cursor: pointer;
+}
+
+/* #current_page{
+  color: rgb(255, 0, 102);
+} */
+
+a.menu_link{
+  text-decoration: none;
+  color: black;
+  padding-top: 13px;
+  padding-bottom: 13px;
+  padding-left: 5px;
+  padding-right: 5px;
+
+}
+
+a.menu_link:hover{
+  /* color: rgb(255, 0, 102);
+  transition: color 0.3s; */
+  transition: background 0.3s;
+  background-color: yellow;
+}
+
+a#this_page{
+  color: rgb(255, 0, 90);
+}
+
+#content{
+  /* background-color: lightgreen; */
+  text-align: center;
+  height: 100%;
+  position: absolute;
+  width: 100%;
+  /* background-image: url('intro.png'); */
+  /* background-size: auto; */
+  /* background-size: cover;
+  background-repeat: no-repeat;
+  min-height: 775px;
+  text-align: center; */
+}
+
+#content_hello{
+  background-image: url("../intro.png");
+  background-size: cover;
+  background-repeat: repeat;
+  min-height: 775px;
+  text-align: center;
+  position: absolute;
+  height: 100%;
+}
+
+#hello_text{
+  position: relative;
+  width: 48%;
+  /* background-color: rgba(255,255,255,0.8); */
+  text-align: justify;
+  margin: 0 auto;
+  top: 93px;
+  padding: 10px;
+  /* min-width: 419px; */
+  min-width: 87%;
+}
+
+a.in_text_link{
+  color: black;
+  /* font-style: normal; */
+  text-decoration: none;/
+}
+
+a.in_text_link:hover{
+    color: rgb(255, 0, 149);
+    background-color: yellow;
+}
+
+p {
+  font-family: 'Roboto';
+  /* font-size: 12.5pt; */
+  font-size: 1.6em;
+  line-height: 1.5;
+}
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WORK~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+#submenubar{
+  text-align: left;
+  position: relative;
+  /* left: 428px; */
+  left: 29%;
+  font-family: 'Roboto';
+  font-size: 1em;
+  font-weight: 300;
+  margin-top: 13px;
+  margin-bottom: 13px;
+  /* background-color: pink; */
+
+}
+.sub_menu_item{
+  display: inline-block;
+  background-color: rgb(50,50,50);
+  color: white;
+  padding: 5px;
+  margin-left: 10px;
+  line-height: 1.3;
+  padding-left: 8px;
+  padding-right: 8px;
+  margin-top: 40px;
+}
+
+a.sub_menu_link{
+  color: white;
+  text-decoration: none;
+}
+
+#first_sub_menu_item{
+  margin-left: 0px;
+}
+
+/* .sm_comp, .sm_sd, .sm_dj, .sm_av, .sm_vis{
+  transition: color 0.2s;
+} */
+
+a#sm_st, a#sm_dj, a#sm_av, a#sm_vi{
+  transition: color 0.2s;
+}
+
+a#sm_st:hover. a#sm_dj:hover, a#sm_av:hover, a#sm_vi:hover{
+  transition: color 0.5s;
+  cursor: pointer;
+  font-weight: normal;
+}
+
+
+/* .sm_comp:hover, .sm_sd:hover, .sm_dj:hover, .sm_av:hover, .sm_vis:hover{
+  transition: color 0.5s;
+  cursor: pointer;
+  font-weight: normal;
+} */
+
+
+
+/* .sm_comp:hover{
+  color: rgb(253,53,29);
+} */
+
+a#sm_st:hover{
+  color: rgb(253,53,29);
+}
+
+/* .sm_sd:hover{
+  color: rgb(230,182,41);
+} */
+
+a#sm_dj:hover{
+  color: rgb(183,217,55);
+}
+
+a#sm_av:hover{
+  color: rgb(53,252,156);
+}
+
+a#sm_vi:hover{
+  color: rgb(46,254,248);
+}
+
+.section_heading{
+  /* background-color: red; */
+  /* left: 428px; */
+  /* left: 29%; */
+  margin: auto;
+  /* float: left; */
+  font-family: 'Roboto';
+  font-size: 0.9em;
+  padding-left: 10px;
+  padding-top: 10px;
+  position: relative;
+  display: table;
+  /* display: block; */
+}
+
+.project_container{
+  margin: auto;
+  margin-top: 10px;
+  /* background-color: pink; */
+  position: relative;
+  /* width: 671px; */
+  /* padding: 5px; */
+  /* height: 159px; */
+
+  /* left: 428px; */
+  /* left: 29%; */
+  min-width: 564px;
+  min-height: 159px;
+  border-width: 3px;
+  /* border-color: lightgrey; */
+  border-color: rgb(255, 0, 90);
+  border-style: solid;
+
+  display: table;
+
+}
+
+.first{
+  margin-top: 20px;
+}
+
+.project_img_container{
+  position: relative;
+  height: 159px;
+  width: 159px;
+  background-color: darkgrey;
+  background-image: url("work/images/rnn.png");
+  float: left;
+  /* display: inline-block; */
+}
+
+.project_text{
+  position: relative;
+  height: 159px;
+  width: 395px;
+  /* background-color: cyan; */
+  float: left;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+#top{
+  position: absolute;
+  font-family: 'Roboto';
+  left: 1014px;
+  /* left: 59%; */
+  top: 401px;
+  font-size: 0.9em;
+  z-index: 1;
+
+}
+
+a.to_top{
+  color: lightgrey;
+  text-decoration: none;
+}
+
+a.to_top:hover{
+  color: red;
+  transition: color 0.2s;
+}
+
+.title, .year, .description{
+  font-size: 11pt;
+  /* text-align: left; */
+  text-align: justify;
+  color: black;
+}
+
+.title{
+  /* font-family: 'Work Sans', sans-serif; */
+  font-family: 'Roboto';
+  font-size: 13pt;
+  /* font-weight: bold; */
+  margin-top: 10px;
+  margin-bottom: 0px;
+  color: black;
+}
+
+.year{
+  font-family: 'Work Sans', sans-serif;
+  margin: 0px;
+  font-style: oblique;
+}
+
+.description{
+  font-family: 'Roboto';
+  font-size: 10pt;
+}
+
+a.project_link{
+  text-decoration: none;
+  font-family: 'Roboto';
+  color: black;
+}
+
+a.project_link:hover{
+  color: rgb(255, 0, 90);
+  background-color: yellow;
+  text-decoration: underline;
+}
+
+.project_img{
+  position: relative;
+  width: 100%;
+}
+
+.last{
+  margin-bottom: 30px;
+}

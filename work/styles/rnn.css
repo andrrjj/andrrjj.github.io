@@ -1,0 +1,42 @@
+/* body {
+  margin: 0px;
+}
+
+#header{
+  position: relative;
+  width: 100vw;
+  height: 207px;
+}
+
+#headerImage{
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+} */
+
+/* #title{
+  position: absolute;
+  z-index: 2;
+  color: white;
+  top: 42%;
+  left: 15vw;
+  font-size: 18pt;
+  font-family: 'Work Sans';
+} */
+
+/* .container{
+  font-family: 'Roboto';
+  position: relative;
+  width: 70vw;
+  left: 15vw;
+  margin-top: 28pt;
+  text-align: justify;
+} */
+
+
+
+/* Last container needs bottom padding */
+#containerLast{
+  padding-bottom: 28pt;
+}
